@@ -1,0 +1,26 @@
+name: SonarQube Analysis
+
+on:
+push:
+branches:
+- main
+
+jobs:
+sonarQube:
+runs-on: ubuntu-latest
+steps:
+- name: Checkout code
+uses: actions/checkout@v3
+
+- name: Set up JDK
+uses: actions/setup-java@v3
+with:
+java-version: '11'
+
+- name: Run SonarQube Scanner
+run: |
+curl -sSLo sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.7.0.2747-linux.zip
+unzip sonar-scanner.zip -d $HOME
+$HOME/sonar-scanner-*/bin/sonar-scanner
+env:
+SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
