@@ -1,26 +1,43 @@
 name: SonarQube Analysis
 
 on:
-push:
-branches:
-- main
+  push:
+    branches:
+      - main
 
 jobs:
-sonarQube:
-runs-on: ubuntu-latest
-steps:
-- name: Checkout code
-uses: actions/checkout@v3
+  sonarQube:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-- name: Set up JDK
-uses: actions/setup-java@v3
-with:
-java-version: '11'
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20' # Adjust to your Node.js version (e.g., 16, 18, 20)
 
-- name: Run SonarQube Scanner
-run: |
-curl -sSLo sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.7.0.2747-linux.zip
-unzip sonar-scanner.zip -d $HOME
-$HOME/sonar-scanner-*/bin/sonar-scanner
-env:
-SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      - name: Install dependencies
+        run: npm install # Or use `yarn install` if you use Yarn
+
+      - name: Run tests with coverage
+        run: npm test -- --coverage # Adjust this based on your test command (e.g., `jest --coverage`, `vitest run --coverage`)
+
+      - name: Set up SonarQube Scanner
+        run: |
+          curl -sSLo sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006-linux.zip
+          unzip sonar-scanner.zip -d $HOME
+          echo "$HOME/sonar-scanner-5.0.1.3006-linux/bin" >> $GITHUB_PATH
+
+      - name: Run SonarQube Scanner
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          sonar-scanner \
+            -Dsonar.projectKey=com.example:my-nodejs-project \
+            -Dsonar.organization=your-organization-key \ # Optional, if using SonarCloud
+            -Dsonar.host.url=https://your-sonarqube-instance \ # Replace with your SonarQube server URL
+            -Dsonar.login=$SONAR_TOKEN \
+            -Dsonar.sources=src \ # Adjust to your source code folder
+            -Dsonar.tests=test \ # Adjust to your test folder
+            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info # Adjust if your coverage report is elsewhere
