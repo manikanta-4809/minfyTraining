@@ -34,8 +34,8 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
           sonar-scanner \
-            -Dsonar.projectKey=com.example:my-nodejs-project \
-            -Dsonar.organization=your-organization-key \
+            -Dsonar.projectKey=com.example:your_deployment_key \
+            -Dsonar.organization=your-organization_deployment-key \
             -Dsonar.host.url=https://your-sonarqube-instance \
             -Dsonar.login=$SONAR_TOKEN \
             -Dsonar.sources=src \
