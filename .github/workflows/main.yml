@@ -23,10 +23,6 @@ jobs:
       - name: Run tests with coverage
         run: npm test -- --coverage
 
-      - name: Set up SonarQube Scanner
-        run: |
-          echo "$HOME/sonar-scanner-5.0.1.3006-linux/bin" >> $GITHUB_PATH
-          sonar-scanner --version
 
       - name: Run SonarQube Scanner
         env:
