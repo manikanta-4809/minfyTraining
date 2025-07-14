@@ -31,6 +31,6 @@ jobs:
 
       - name: Run SonarQube Scanner
         env:
-          SONAR_TOKEN: ${{ secrets.your_sonar_token }} # Matches your GitHub secret name
+          SONAR_TOKEN: ${{ secrets.YOUR_SONAR_TOKEN }} # Matches your GitHub secret name
         run: |
-          sonar-scanner -Dsonar.login=$SONAR_TOKENname: SonarQube Analysis
+          sonar-scanner -Dsonar.login=$SONAR_TOKEN
