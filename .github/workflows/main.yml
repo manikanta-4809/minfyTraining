@@ -23,17 +23,6 @@ jobs:
       - name: Run tests with coverage
         run: npm test -- --coverage # Adjust based on your test command (e.g., `jest --coverage`, `vitest run --coverage`)
 
-      - name: Start SonarQube server
-        run: |
-          docker run -d --name sonarqube -p 9000:9000 sonarqube:latest
-          # Install jq for parsing JSON
-          sudo apt-get update && sudo apt-get install -y jq
-          # Wait for SonarQube to be ready (timeout after 120 seconds)
-          timeout 120s bash -c 'until curl --silent http://localhost:9000/api/system/health | grep -q "\"health\":\"GREEN\""; do sleep 5; done'
-          # Generate a SonarQube token
-          TOKEN=$(curl -s -u admin:admin -X POST "http://localhost:9000/api/user_tokens/generate" -d "name=gha-token" | jq -r '.token')
-          echo "SONAR_TOKEN=$TOKEN" >> $GITHUB_ENV
-
       - name: Set up SonarQube Scanner
         run: |
           curl -sSLo sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006-linux.zip
@@ -41,5 +30,7 @@ jobs:
           echo "$HOME/sonar-scanner-5.0.1.3006-linux/bin" >> $GITHUB_PATH
 
       - name: Run SonarQube Scanner
+        env:
+          SONAR_TOKEN: ${{ secrets.your_sonar_token }} # Matches your GitHub secret name
         run: |
-          sonar-scanner -Dsonar.login=$SONAR_TOKEN
+          sonar-scanner -Dsonar.login=$SONAR_TOKEN -X
