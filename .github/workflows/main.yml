@@ -23,14 +23,9 @@ jobs:
       - name: Run tests with coverage
         run: npm test -- --coverage # Adjust based on your test command (e.g., `jest --coverage`, `vitest run --coverage`)
 
-      - name: Set up SonarQube Scanner
-        run: |
-          curl -sSLo sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006-linux.zip
-          unzip sonar-scanner.zip -d $HOME
-          echo "$HOME/sonar-scanner-5.0.1.3006-linux/bin" >> $GITHUB_PATH
 
       - name: Run SonarQube Scanner
         env:
           SONAR_TOKEN: ${{ secrets.your_sonar_token }} # Matches your GitHub secret name
         run: |
-          sonar-scanner -Dsonar.login=$SONAR_TOKEN -X
+          sonar-scanner -Dsonar.login=$SONAR_TOKEN 
