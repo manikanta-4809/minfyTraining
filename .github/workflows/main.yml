@@ -34,38 +34,3 @@ jobs:
           SONAR_TOKEN: ${{ secrets.your_sonar_token }} # Matches your GitHub secret name
         run: |
           sonar-scanner -Dsonar.login=$SONAR_TOKENname: SonarQube Analysis
-
-on:
-  push:
-    branches:
-      - main
-
-jobs:
-  sonarQube:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '20' # Adjust to your Node.js version (e.g., 16, 18, 20)
-
-      - name: Install dependencies
-        run: npm install # Or use `yarn install` if you use Yarn
-
-      - name: Run tests with coverage
-        run: npm test -- --coverage # Adjust based on your test command (e.g., `jest --coverage`, `vitest run --coverage`)
-
-      - name: Set up SonarQube Scanner
-        run: |
-          curl -sSLo sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006-linux.zip
-          unzip sonar-scanner.zip -d $HOME
-          echo "$HOME/sonar-scanner-5.0.1.3006-linux/bin" >> $GITHUB_PATH
-
-      - name: Run SonarQube Scanner
-        env:
-          SONAR_TOKEN: ${{ secrets.your_sonar_token }} # Matches your GitHub secret name
-        run: |
-          sonar-scanner -Dsonar.login=$SONAR_TOKEN
